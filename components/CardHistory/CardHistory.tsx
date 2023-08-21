@@ -1,6 +1,7 @@
 import { FunctionComponent } from "react";
 
 import Card from "../Card/Card";
+import { Card as CardData } from "@/shytl-data/card";
 import { smallCardStyles } from "../Card/Card.module.css";
 import {
   cardContainerScrollStyles,
@@ -10,7 +11,7 @@ import {
 } from "./CardHistory.module.css";
 
 interface CardHistoryProps {
-  cardHistory: string[];
+  cardHistory: CardData[];
 }
 
 const CardHistory: FunctionComponent<CardHistoryProps> = ({ cardHistory }) => {
@@ -19,8 +20,8 @@ const CardHistory: FunctionComponent<CardHistoryProps> = ({ cardHistory }) => {
       <div className={historyTitleStyles}>previous cards</div>
       <div className={cardContainerStyles}>
         <div className={cardContainerScrollStyles}>
-          {cardHistory.map((qn) => (
-            <Card styleName={smallCardStyles} question={qn} key={qn+"history"} contentTagsOn={false}/>
+          {cardHistory.map((c, i) => (
+            <Card styleName={smallCardStyles} card={c} key={String(i)+"history"} contentTagsOn={false}/>
           ))}
         </div>
       </div>
