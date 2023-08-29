@@ -68,7 +68,7 @@ export const selectedLevelStyles = style({
   outline: "none",
 });
 
-export const nextCardButtonStlyes = style({
+export const nextCardButtonStyles = style({
   alignItems: "center",
   justifyContent: "center",
   margin: 25,

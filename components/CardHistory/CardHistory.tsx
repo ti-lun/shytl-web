@@ -21,7 +21,12 @@ const CardHistory: FunctionComponent<CardHistoryProps> = ({ cardHistory }) => {
       <div className={cardContainerStyles}>
         <div className={cardContainerScrollStyles}>
           {cardHistory.map((c, i) => (
-            <Card styleName={smallCardStyles} card={c} key={String(i)+"history"} contentTagsOn={false}/>
+            <Card
+              card={c}
+              contentTagsOn={false}
+              key={String(i)+"history"}
+              styleName={smallCardStyles}
+            />
           ))}
         </div>
       </div>

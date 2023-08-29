@@ -5,9 +5,15 @@ import { cardStyles, red, orange, yellow, green, blue } from "./Card.module.css"
 import { Card as CardData } from '@/shytl-data/card';
 
 interface CardProps {
+<<<<<<< Updated upstream
   styleName: string;
   contentTagsOn: boolean;
   card: CardData
+=======
+  card: CardData;
+  contentTagsOn: boolean;
+  styleName: string;
+>>>>>>> Stashed changes
 }
 
 const convertToContentTagClass = (tag: string) => {
@@ -58,8 +64,6 @@ const convertToContentTagText = (tag: string) => {
 };
 
 function Card(props: CardProps) {
-  /*const asterisk = props.question.indexOf('*');
-  const contentTag = asterisk === -1 ? "" : props.question.slice(0, asterisk);*/
   const contentTag = props.card.contentTag || "";
 
   const [viewContent, setViewContent] = useState(false);
@@ -69,13 +73,22 @@ function Card(props: CardProps) {
   };
 
   if (contentTag !== "" && viewContent === false && props.contentTagsOn) {
-    return (<div className={clsx(cardStyles, props.styleName, convertToContentTagClass(contentTag))} onClick={toggleViewContent}>
-      {convertToContentTagText(contentTag)}
-    </div>);
+    return (
+      <div className={clsx(cardStyles, props.styleName, convertToContentTagClass(contentTag))} onClick={toggleViewContent}>
+        {convertToContentTagText(contentTag)} <br />
+        {props.card.asker} asks {props.card.answerer}
+        {props.card.skipped ? "SKIPPED" : ""}
+      </div>
+    );
   }
   else {
-      return (<div className={clsx(cardStyles, props.styleName)}>
-      {/*props.question.slice(asterisk+1)*/props.card.text}</div>);
+      return (
+        <div className={clsx(cardStyles, props.styleName)}>
+          {props.card.text} <br />
+          {props.card.asker} asks {props.card.answerer}
+          {props.card.skipped ? "SKIPPED" : ""}
+        </div>
+      );
   }
 }
 

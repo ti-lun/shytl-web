@@ -1,10 +1,10 @@
 'use client'
 import clsx from "clsx";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { scaleDown as Menu, Styles } from "react-burger-menu";
+import Image from "next/image";
 import * as UUID from "uuid";
 
-import { levelFour, levelOne, levelThree, levelTwo } from "@/shytl-data/levels";
 import Card from "@/components/Card/Card";
 import { bigCardStyles } from "@/components/Card/Card.module.css";
 import Credits from "@/components/Credits/Credits";
@@ -18,7 +18,7 @@ import { update, Event } from '@/shytl-data/update';
 import {
   appStyles,
   levelButtonStyles,
-  nextCardButtonStlyes,
+  nextCardButtonStyles,
   questionStyles,
   selectedLevelStyles,
   titleStyles,
@@ -28,26 +28,6 @@ import {
 } from "@/public/styles/app.css";
 
 import { FinalCard } from "@/shytl-data/card";
-
-// function shuffle<T>(array: T[]) {
-//   let currentIndex = array.length;
-//   let temporaryValue;
-//   let randomIndex;
-
-//   // While there remain elements to shuffle...
-//   while (0 !== currentIndex) {
-//     // Pick a remaining element...
-//     randomIndex = Math.floor(Math.random() * currentIndex);
-//     currentIndex -= 1;
-
-//     // And swap it with the current element.
-//     temporaryValue = array[currentIndex];
-//     array[currentIndex] = array[randomIndex];
-//     array[randomIndex] = temporaryValue;
-//   }
-
-//   return array;
-// }
 
 const styles : any = {
   bmBurgerButton: {
@@ -85,11 +65,8 @@ const styles : any = {
   }
 };
 
-const finalCardForLevelMessage = "You have finished all the cards in this level!";
-const finalCardForGameMessage = "You've finished all the cards!  The game's done!  Refresh the page or update the player config to start over.";
-
 function Home() {
-  const [ localGame, setlocalGame ] = useState<Game>(createGameFromId(UUID.v4()));
+  const [ localGame, setLocalGame ] = useState<Game>(createGameFromId(UUID.v4()));
   const [newPlayer, setNewPlayer] = useState("");
 
   function updatelocalGame(event: Event) {
@@ -97,7 +74,7 @@ function Home() {
     if (isError(newState))
       alert(newState)
     else
-      setlocalGame(newState);
+      setLocalGame(newState);
   }
 
   function handleAddPlayer() {
@@ -118,7 +95,7 @@ function Home() {
     updatelocalGame({ type: "Event", eventType: "UpdateOptions", event: { options: { ...localGame.options, contentTagsOn: !localGame.options.contentTagsOn } } });
   }
 
-  function jumpToLevel(level: 1 | 2 | 3 | 4) {
+  function jumpToLevel(level: number) {
     updatelocalGame({ type: "Event", eventType: "JumpToLevel", event: { level } } );
   }
 
@@ -132,25 +109,21 @@ function Home() {
   const players = localGame.players;
   const rounds = localGame.options.rounds;
 
-  const buttons = [1, 2, 3, 4].map((level) => (
+  const buttons = [0, 1, 2, 3].map((level) => (
     <button
       className={clsx(levelButtonStyles, { [selectedLevelStyles]: level === localGame.currentLevel })}
-      onClick={() => {jumpToLevel(level as 1|2|3|4);}}
-      key={level}
+      onClick={() => {jumpToLevel(level)}}
+      key={level+1}
     >
-      {"Level " + String(level)}
+      {"Level " + String(level+1)}
     </button>
   ));
 
   let renderedNames = players.map(player => <div key={player.name}>{player.name} &nbsp; <button value={player.id} onClick={handleRemovePlayer} className={clsx(smallButtonStyles)}>Remove</button></div>);
 
-  const currCard = localGame.currentCard >= localGame.cards[localGame.currentLevel - 1].length
+  let currCard = localGame.currentCard === undefined
   ? FinalCard
-  : localGame.cards[localGame.currentLevel - 1][localGame.currentCard];
-
-  const cardHistory = localGame.cards[localGame.currentLevel - 1]
-    .slice(0, localGame.currentCard)
-    .filter((_, i) => localGame.skipped[localGame.currentLevel - 1].findIndex(k => k == i) == -1);
+  : localGame.currentCard;
 
   return (
     <div id="outer-container" style={{height: '100%'}}>
@@ -187,34 +160,45 @@ function Home() {
       </Menu>
       <main id="page-wrap">
         <Credits />
-        <div className={clsx(titleStyles, alignCenter)}><img src={logo.src} height={200}/><br/><b>so how&apos;s your tech life</b></div>
+        <div className={clsx(titleStyles, alignCenter)}>
+          <Image 
+            alt="a funny picture of Tommy Wiseau saying so how's your tech life"
+            height={200}
+            width={200}
+            src={logo.src} />
+          <br/>
+          <b>so how&apos;s your tech life</b>
+        </div>
         <div className={appStyles}>
           <div>{buttons }</div>
           <div className={questionStyles}>
-            <Card key={localGame.currentCard} styleName={bigCardStyles} card={currCard} contentTagsOn={localGame.options.contentTagsOn}/>
+            { localGame.currentAsker != null && localGame.currentAnswerer != null ?
+                <Card 
+                  key={localGame.currentCard !== undefined ? localGame.currentCard.text : 0}
+                  styleName={bigCardStyles}
+                  card={currCard}
+                  contentTagsOn={localGame.options.contentTagsOn} /> :
+                "Please add some players"
+            }
+
           </div>
-          <CardHistory cardHistory={cardHistory} />
+          <CardHistory cardHistory={localGame.cardHistory} />
 
           <div className={alignCenter}>
-            {/*playersThisRound.length >= 2*/localGame.currentAsker !== null && localGame.currentAnswerer !== null ? <div>
-              <button className={nextCardButtonStlyes} onClick={() => handleNextCard()}>
+            <div>
+                <h3>Level {localGame.currentLevel + 1}, Round {localGame.currentRound + 1}</h3>
+                { (localGame.players.length < 2 && localGame.currentLevel == 1) && 
+                    <div>Please add some players to begin!</div>
+                }
+              </div>
+            {localGame.currentAsker !== null && localGame.currentAnswerer !== null ? <div>
+              <button className={nextCardButtonStyles} onClick={() => handleNextCard()}>
                 next card
               </button>
-              <button className={nextCardButtonStlyes} onClick={() => handleNextCard(true)}>
+              <button className={nextCardButtonStyles} onClick={() => handleNextCard(true)}>
                 skip card
               </button>
-            </div> : <button className={nextCardButtonStlyes} onClick={() => handleNextCard(false)}>start game</button>}
-            <div>
-              <h3>Level {/*levelKeyToInt[currLevel]*/localGame.currentLevel}, Round {/*currRound*/localGame.currentRound + 1}</h3>
-              { (/*playersThisRound.length < 2 && levelKeyToInt[currLevel] == 1*/localGame.players.length < 2 && localGame.currentLevel == 1) && 
-                  <div>Please add some players to begin!</div>
-              }
-              { /*(playersThisRound.length >= 2) &&
-                  (<div><h3>Turn: { playersThisRound.length % 2 == 0 ? playersThisRound[0] + " asks " + playersThisRound[1] : playersThisRound[0] + ", " + playersThisRound[1] + " and " + playersThisRound[2] }</h3></div>)*/
-                (localGame.currentAsker != null && localGame.currentAnswerer != null) &&
-                  (<div><h3>Turn: { localGame.players[localGame.currentAsker].name + " asks " + localGame.players[localGame.currentAnswerer].name }</h3></div>)
-              }
-            </div>
+            </div> : <button className={nextCardButtonStyles} onClick={() => handleNextCard(false)}>start game</button>}
           </div>
         </div>
       </main>
