@@ -72,7 +72,7 @@ function Card(props: CardProps) {
       <div className={clsx(cardStyles, props.styleName, convertToContentTagClass(contentTag))} onClick={toggleViewContent}>
         {convertToContentTagText(contentTag)} <br />
         {props.card.asker} asks {props.card.answerer}
-        {props.card.skipped ? "SKIPPED" : ""}
+        {props.card.skipped ? "SKIPPED!" : ""}
       </div>
     );
   }
