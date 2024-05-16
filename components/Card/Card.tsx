@@ -5,15 +5,9 @@ import { cardStyles, red, orange, yellow, green, blue } from "./Card.module.css"
 import { Card as CardData } from '@/shytl-data/card';
 
 interface CardProps {
-<<<<<<< Updated upstream
-  styleName: string;
-  contentTagsOn: boolean;
-  card: CardData
-=======
   card: CardData;
   contentTagsOn: boolean;
   styleName: string;
->>>>>>> Stashed changes
 }
 
 const convertToContentTagClass = (tag: string) => {
@@ -71,7 +65,8 @@ function Card(props: CardProps) {
   const toggleViewContent = () => {
     setViewContent(true);
   };
-
+  // TODO:
+  // Do something with the SKIPPED
   if (contentTag !== "" && viewContent === false && props.contentTagsOn) {
     return (
       <div className={clsx(cardStyles, props.styleName, convertToContentTagClass(contentTag))} onClick={toggleViewContent}>
