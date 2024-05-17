@@ -11,9 +11,9 @@ import Credits from "@/components/Credits/Credits";
 import CardHistory from "@/components/CardHistory/CardHistory";
 import logo from "@/public/images/techlifegame.png";
 
-import { isError } from '@/shytl-data/error';
-import { Game, createGameFromId } from '@/shytl-data/game';
-import { update, Event } from '@/shytl-data/update';
+import { isError } from '@somatic/shytl-data/error';
+import { Game, createGameFromId } from '@somatic/shytl-data/game';
+import { update, Event } from '@somatic/shytl-data/update';
 
 import {
   appStyles,
@@ -27,7 +27,7 @@ import {
   alignCenter
 } from "@/public/styles/app.css";
 
-import { FinalCard } from "@/shytl-data/card";
+import { FinalCard } from "@somatic/shytl-data/card";
 
 const styles : any = {
   bmBurgerButton: {

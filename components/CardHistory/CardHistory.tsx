@@ -1,7 +1,7 @@
 import { FunctionComponent } from "react";
 
 import Card from "../Card/Card";
-import { Card as CardData } from "@/shytl-data/card";
+import { Card as CardData } from "@somatic/shytl-data/card";
 import { smallCardStyles } from "../Card/Card.module.css";
 import {
   cardContainerScrollStyles,

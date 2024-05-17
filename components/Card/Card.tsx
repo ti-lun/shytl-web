@@ -1,8 +1,7 @@
 import { clsx } from "clsx";
 import { useState } from "react";
 import { cardStyles, red, orange, yellow, green, blue } from "./Card.module.css";
-
-import { Card as CardData } from '@/shytl-data/card';
+import { Card as CardData } from "@somatic/shytl-data/card";
 
 interface CardProps {
   card: CardData;

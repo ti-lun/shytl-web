@@ -5,6 +5,8 @@ const {
 
   
 /** @type {import('next').NextConfig} */
-const nextConfig = {}
+const nextConfig = {
+  transpilePackages: ['@somatic/shytl-data']
+};
 
 module.exports = withVanillaExtract(nextConfig);

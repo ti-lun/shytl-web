@@ -9,28 +9,37 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@types/node": "20.5.1",
-    "@types/react": "18.2.20",
-    "@types/react-dom": "18.2.7",
+    "@babel/compat-data": "7.19.4",
+    "@babel/core": "7.19.6",
+    "@babel/generator": "7.19.6",
+    "@babel/helper-compilation-targets": "7.19.3",
+    "@babel/helper-create-class-features-plugin": "7.19.0",
+    "@babel/helper-module-transforms": "7.19.6",
+    "@somatic/shytl-data": "^1.0.0",
+    "@types/node": "^20",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
     "@vanilla-extract/css": "^1.12.0",
     "autoprefixer": "10.4.15",
     "clsx": "^2.0.0",
-    "eslint": "8.47.0",
-    "eslint-config-next": "13.4.19",
-    "next": "^13.4.19",
-    "postcss": "8.4.28",
-    "react": "18.2.0",
+    "eslint": "^8",
+    "eslint-config-next": "^14.2.3",
+    "next": "^14.2.3",
+    "npmrc": "^1.1.1",
+    "postcss": "^8",
+    "react": "^18",
     "react-burger-menu": "^3.0.9",
-    "react-dom": "18.2.0",
+    "react-dom": "^18",
     "sharp": "^0.33.3",
-    "tailwindcss": "3.3.3",
-    "typescript": "5.1.6"
+    "tailwindcss": "3.3.3"
   },
   "devDependencies": {
     "@types/react-burger-menu": "^2.8.3",
     "@types/uuid": "^9.0.2",
     "@vanilla-extract/next-plugin": "^2.2.2",
     "cypress": "^4.2.0",
+    "ts-loader": "^9.5.1",
+    "typescript": "^5.4.5",
     "uuid": "^9.0.0"
   }
 }
