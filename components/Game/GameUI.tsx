@@ -1,10 +1,11 @@
-'use client'
+"use client";
 import clsx from "clsx";
 import { useState } from "react";
 import { FunctionComponent } from "react";
-import { scaleDown as Menu } from "react-burger-menu";
+import GameMenu from "@/components/GameMenu/GameMenu";
 import Image from "next/image";
 import * as UUID from "uuid";
+import { Platforms } from "@/src/lib/enums";
 
 import Card from "@/components/Card/Card";
 import { bigCardStyles } from "@/components/Card/Card.module.css";
@@ -12,9 +13,9 @@ import Credits from "@/components/Credits/Credits";
 import CardHistory from "@/components/CardHistory/CardHistory";
 import logo from "@/public/images/techlifegame.png";
 
-import { isError } from '@somatic/shytl-data/error';
-import { Game, createGameFromId } from '@somatic/shytl-data/game';
-import { update, Event } from '@somatic/shytl-data/update';
+import { isError } from "@somatic/shytl-data/error";
+import { Game, createGameFromId } from "@somatic/shytl-data/game";
+import { update, Event } from "@somatic/shytl-data/update";
 
 import {
   appStyles,
@@ -23,191 +24,183 @@ import {
   questionStyles,
   selectedLevelStyles,
   titleStyles,
-  textInputStyles,
-  smallButtonStyles,
-  alignCenter
+  alignCenter,
 } from "@/public/styles/app.css";
 
 import { FinalCard } from "@somatic/shytl-data/card";
 
-const styles : any = {
-  bmBurgerButton: {
-    position: 'fixed',
-    width: '3%',
-    height: '3%',
-    right: 10,
-    top: 15,
-  },
-  bmBurgerBars: {
-    background: '#40916b',
-  },
-  bmMenu: {
-    background: 'white',
-    padding: '10%',
-    overflow: 'hidden'
-  },
-  bmMenuWrap: {
-    position: 'fixed',
-    height: '100%'
-  },
-  bmCross: {
-    background: '#bdc3c7'
-  },
-  'page-wrap': {
-    width: '100%',
-    height: '100%',
-    display: 'flex',
-    'justify-content': 'center',
-    'align-items': 'center',
-    padding: 0,
-  },
-  bmOverlay: {
-    background: 'rgba(0, 0, 0, 0.3)'
-  }
-};
-
-// TODO:
-// Create Platform enum
-interface GameUI {
-  localGame: Game;
-  newPlayer: string;
-  platform: number // enum
+interface GameUIProps {
+  initialLocalGame: Game; 
+  platform: Platforms // Platforms enum
 }
 
-const GameUI: FunctionComponent<GameUI> = ({ platform }) => {
-  const [ localGame, setLocalGame ] = useState<Game>(createGameFromId(UUID.v4()));
-  const  [newPlayer, setNewPlayer ] = useState("");
+const GameUI: FunctionComponent<GameUIProps> = ({ initialLocalGame, platform }) => {
+  const [localGame, setLocalGame] = useState<Game>(initialLocalGame);
+  const [newPlayer, setNewPlayer] = useState("");
+
+  const players = localGame.players;
+  const rounds = localGame.options.rounds;
+  let currCard =
+    localGame.currentCard === undefined ? FinalCard : localGame.currentCard;
 
   function updatelocalGame(event: Event) {
+    if (platform == Platforms.online) {
+      // send a request to start a new game--then we need to get the room ID to help people join
+    }
+
     const newState = update(localGame, event);
-    if (isError(newState))
-      alert(newState)
-    else
-      setLocalGame(newState);
+    if (isError(newState)) alert(newState);
+    else setLocalGame(newState);
   }
 
+  // this is really just a thing that makes sense in local play
+  // not a thing in online
   function handleAddPlayer() {
-    if (newPlayer.length > 0) 
-      updatelocalGame({ type: "Event", eventType: "AddPlayer", event: { player: { id: UUID.v4(), name: newPlayer } } })
+    if (newPlayer.length > 0)
+      updatelocalGame({
+        type: "Event",
+        eventType: "AddPlayer",
+        event: { player: { id: UUID.v4(), name: newPlayer } },
+      });
   }
 
   function handleRemovePlayer(e: React.ChangeEvent<any>) {
     const playerID = e.currentTarget.value;
-    updatelocalGame({ type: "Event", eventType: "RemovePlayer", event: { playerID } });
+    updatelocalGame({
+      type: "Event",
+      eventType: "RemovePlayer",
+      event: { playerID },
+    });
   }
 
-  function setRounds(r: number) { 
-    updatelocalGame({ type: "Event", eventType: "UpdateOptions", event: { options: { ...localGame.options, rounds: r } } });
+  function setRounds(r: number) {
+    updatelocalGame({
+      type: "Event",
+      eventType: "UpdateOptions",
+      event: { options: { ...localGame.options, rounds: r } },
+    });
   }
 
   function toggleContentTags() {
-    updatelocalGame({ type: "Event", eventType: "UpdateOptions", event: { options: { ...localGame.options, contentTagsOn: !localGame.options.contentTagsOn } } });
+    updatelocalGame({
+      type: "Event",
+      eventType: "UpdateOptions",
+      event: {
+        options: {
+          ...localGame.options,
+          contentTagsOn: !localGame.options.contentTagsOn,
+        },
+      },
+    });
   }
 
   function jumpToLevel(level: number) {
-    updatelocalGame({ type: "Event", eventType: "JumpToLevel", event: { level } } );
+    updatelocalGame({
+      type: "Event",
+      eventType: "JumpToLevel",
+      event: { level },
+    });
   }
 
   function handleNextCard(skip: boolean = false) {
-    if (!skip)
-      updatelocalGame({ type: "Event", eventType: "DrawCard" });
-    else
-      updatelocalGame({ type: "Event", eventType: "SkipCard" });
+    if (!skip) updatelocalGame({ type: "Event", eventType: "DrawCard" });
+    else updatelocalGame({ type: "Event", eventType: "SkipCard" });
   }
-
-  const players = localGame.players;
-  const rounds = localGame.options.rounds;
 
   const buttons = [0, 1, 2, 3].map((level) => (
     <button
-      className={clsx(levelButtonStyles, { [selectedLevelStyles]: level === localGame.currentLevel })}
-      onClick={() => {jumpToLevel(level)}}
-      key={level+1}
+      className={clsx(levelButtonStyles, {
+        [selectedLevelStyles]: level === localGame.currentLevel,
+      })}
+      onClick={() => {
+        jumpToLevel(level);
+      }}
+      key={level + 1}
     >
-      {"Level " + String(level+1)}
+      {"Level " + String(level + 1)}
     </button>
   ));
 
-  let renderedNames = players.map(player => <div key={player.name}>{player.name} &nbsp; <button value={player.id} onClick={handleRemovePlayer} className={clsx(smallButtonStyles)}>Remove</button></div>);
-
-  let currCard = localGame.currentCard === undefined
-  ? FinalCard
-  : localGame.currentCard;
-
   return (
-    <div id="outer-container" style={{height: '100%'}}>
-      <Menu
-        id="scaleDown"
-        styles={styles}
-        width={500}
-        pageWrapId={ "page-wrap" }
-        outerContainerId={ "outer-container" }
-        right>
-        <div className="alignLeft">
-          <h2>Player Config</h2>
-          <p><b>{players.length == 1 ? players.length + " player is " : players.length + " players are "}</b> playing with {rounds == 1 ? rounds + " card " : rounds + " cards "}for each player each round, making a total of {players.length * rounds} cards each level.</p>
-          <ul><h3>{renderedNames}</h3></ul>
-          <input 
-            value={newPlayer} 
-            onChange={(e) => setNewPlayer(e.target.value)} 
-            onKeyDown={(e) => { if (e.key === "Enter") handleAddPlayer() }} 
-            className={clsx(textInputStyles)} />
-          <br />
-          <button onClick={handleAddPlayer} className={clsx(smallButtonStyles)}>Add player</button>
-          <p>
-            <input
-              value={rounds}
-              type="number"
-              min="1"
-              onChange={(e) => setRounds(parseInt(e.currentTarget.value))}
-              className={clsx(textInputStyles)} />
-            <br/>
-            cards each player answers
-          </p>
-          <p><input type="checkbox" onClick={toggleContentTags} defaultChecked/> Play with content tags</p>
-        </div>
-      </Menu>
+    <div id="outer-container" style={{ height: "100%" }}>
+      <GameMenu
+        handleAddPlayer={handleAddPlayer}
+        handleRemovePlayer={handleRemovePlayer}
+        newPlayer={newPlayer}
+        platform={platform}
+        players={players}
+        rounds={rounds}
+        setNewPlayer={setNewPlayer}
+        setRounds={setRounds}
+        toggleContentTags={toggleContentTags}
+      />
       <main id="page-wrap">
         <Credits />
         <div className={clsx(titleStyles, alignCenter)}>
-          <Image 
+          <Image
             alt="a funny picture of Tommy Wiseau saying so how's your tech life"
             height={200}
             width={200}
-            src={logo.src} />
-          <br/>
+            src={logo.src}
+          />
+          <br />
           <b>so how&apos;s your tech life</b>
         </div>
         <div className={appStyles}>
-          <div>{buttons }</div>
+          <div>{buttons}</div>
           <div className={questionStyles}>
-            { localGame.currentAsker != null && localGame.currentAnswerer != null ?
-                <Card 
-                  key={localGame.currentCard !== undefined ? localGame.currentCard.text : 0}
+            {localGame.currentAsker != null &&
+            localGame.currentAnswerer != null ? (
+                <Card
+                  key={
+                    localGame.currentCard !== undefined
+                      ? localGame.currentCard.text
+                      : 0
+                  }
                   styleName={bigCardStyles}
                   card={currCard}
-                  contentTagsOn={localGame.options.contentTagsOn} /> :
+                  contentTagsOn={localGame.options.contentTagsOn}
+                />
+              ) : (
                 "Please add some players"
-            }
-
+              )}
           </div>
           <CardHistory cardHistory={localGame.cardHistory} />
 
           <div className={alignCenter}>
             <div>
-                <h3>Level {localGame.currentLevel + 1}, Round {localGame.currentRound + 1}</h3>
-                { (localGame.players.length < 2 && localGame.currentLevel == 1) && 
-                    <div>Please add some players to begin!</div>
-                }
-              </div>
-            {localGame.currentAsker !== null && localGame.currentAnswerer !== null ? <div>
-              <button className={nextCardButtonStyles} onClick={() => handleNextCard()}>
-                next card
-              </button>
-              <button className={nextCardButtonStyles} onClick={() => handleNextCard(true)}>
-                skip card
-              </button>
-            </div> : <button className={nextCardButtonStyles} onClick={() => handleNextCard(false)}>start game</button>}
+              <h3>
+                Level {localGame.currentLevel + 1}, Round{" "}
+                {localGame.currentRound + 1}
+              </h3>
+              {localGame.players.length < 2 && localGame.currentLevel == 1 && (
+                <div>Please add some players to begin!</div>
+              )}
+            </div>
+            {localGame.currentAsker !== null &&
+            localGame.currentAnswerer !== null ? (
+                <div>
+                  <button
+                    className={nextCardButtonStyles}
+                    onClick={() => handleNextCard()}
+                  >
+                  next card
+                  </button>
+                  <button
+                    className={nextCardButtonStyles}
+                    onClick={() => handleNextCard(true)}
+                  >
+                  skip card
+                  </button>
+                </div>
+              ) : (
+                <button
+                  className={nextCardButtonStyles}
+                  onClick={() => handleNextCard(false)}
+                >
+                start game
+                </button>
+              )}
           </div>
         </div>
       </main>

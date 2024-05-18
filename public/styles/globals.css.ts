@@ -17,7 +17,7 @@ globalStyle("body", {
     [primaryAccent]: "#40916b",
     [primaryAccentMuted]: "#2b7050",
   },
-  color: primaryAccent
+  color: primaryAccent,
 });
 
 globalStyle("a, a:visited, a:hover", {
@@ -26,7 +26,7 @@ globalStyle("a, a:visited, a:hover", {
 
 // Scrollbar stuff
 globalStyle("::-webkit-scrollbar", {
-  width: 5
+  width: 5,
 });
 
 globalStyle("::-webkit-scrollbar-track", {

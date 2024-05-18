@@ -38,6 +38,7 @@
     "@types/uuid": "^9.0.2",
     "@vanilla-extract/next-plugin": "^2.2.2",
     "cypress": "^4.2.0",
+    "prettier": "3.2.5",
     "ts-loader": "^9.5.1",
     "typescript": "^5.4.5",
     "uuid": "^9.0.0"

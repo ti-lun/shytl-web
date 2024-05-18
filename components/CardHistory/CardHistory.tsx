@@ -24,7 +24,7 @@ const CardHistory: FunctionComponent<CardHistoryProps> = ({ cardHistory }) => {
             <Card
               card={c}
               contentTagsOn={false}
-              key={String(i)+"history"}
+              key={String(i) + "history"}
               styleName={smallCardStyles}
             />
           ))}

@@ -22,7 +22,7 @@ export const titleStyles = style({
   paddingTop: "3vh",
   paddingBottom: "3vh",
   fontWeight: 1600,
-  fontFamily: "Consolas"
+  fontFamily: "Consolas",
 });
 
 export const levelsStyles = style({
@@ -104,7 +104,7 @@ export const textInputStyles = style({
   color: primaryAccentMuted,
   fontFamily: "Consolas",
   borderRadius: 10,
-  padding: 10
+  padding: 10,
 });
 
 export const smallButtonStyles = style({
@@ -131,13 +131,13 @@ export const smallButtonStyles = style({
     "&:focus, &:active": {
       outline: "none",
     },
-  }
+  },
 });
 
 export const alignCenter = style({
-  textAlign: "center"
+  textAlign: "center",
 });
 
 export const alignLeft = style({
-  textAlign: "left"
+  textAlign: "left",
 });

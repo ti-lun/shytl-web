@@ -56,24 +56,24 @@ export const smallCardStyles = style({
 
 export const red = style({
   backgroundColor: "#ffd7d1",
-  color: "#fc5a42"
+  color: "#fc5a42",
 });
 
 export const orange = style({
   backgroundColor: "#fff2e3",
-  color: "#ff991c"
+  color: "#ff991c",
 });
 
 export const yellow = style({
   backgroundColor: "#ffffe3",
-  color: "#b5b20b"
+  color: "#b5b20b",
 });
 
 export const green = style({
-  backgroundColor: "#edffe3"
+  backgroundColor: "#edffe3",
 });
 
 export const blue = style({
   backgroundColor: "#e3faff",
-  color: "#5ca5ff"
+  color: "#5ca5ff",
 });
